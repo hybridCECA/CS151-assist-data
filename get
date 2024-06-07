@@ -1,0 +1,43 @@
+#!/bin/bash
+
+for college in 35 150 36 200
+do
+	for uni in 120 117 79 89 144 46 7 128 132 98 143 141 50 21 29 129 81 76 1 12 42 60 23 24
+	do
+		curl "https://assist.org/api/agreements?receivingInstitutionId=${uni}&sendingInstitutionId=${college}&academicYearId=74&categoryCode=major" \
+		  -H 'Accept: application/json, text/plain, */*' \
+		  -H 'Accept-Language: en-US,en;q=0.9,es;q=0.8' \
+		  -H 'Connection: keep-alive' \
+		  -H 'Content-Type: application/json' \
+		  -H 'DNT: 1' \
+		  -H 'Sec-Fetch-Dest: empty' \
+		  -H 'Sec-Fetch-Mode: cors' \
+		  -H 'Sec-Fetch-Site: same-origin' \
+		  -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36' \
+		  -H 'sec-ch-ua: "Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"' \
+		  -H 'sec-ch-ua-mobile: ?0' \
+		  -H 'sec-ch-ua-platform: "Linux"' > majors 2>/dev/null
+
+		python3 major_parser.py | while read line
+		do
+			echo "Fetching ${college} ${uni} ${line}"
+
+			curl "https://assist.org/api/articulation/Agreements?Key=${line}" \
+			  -H 'Accept: application/json, text/plain, */*' \
+			  -H 'Accept-Language: en-US,en;q=0.9,es;q=0.8' \
+			  -H 'Connection: keep-alive' \
+			  -H 'Content-Type: application/json' \
+			  -H 'DNT: 1' \
+			  -H 'Sec-Fetch-Dest: empty' \
+			  -H 'Sec-Fetch-Mode: cors' \
+			  -H 'Sec-Fetch-Site: same-origin' \
+			  -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36' \
+			  -H 'sec-ch-ua: "Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"' \
+			  -H 'sec-ch-ua-mobile: ?0' \
+			  -H 'sec-ch-ua-platform: "Linux"' >> data 2>/dev/null
+
+			sleep 2
+		done
+	done
+done
+
